@@ -104,12 +104,64 @@ describe('GUI - testes relacionados ao cadastro de produtos', () => {
         cy.get('#btn-adicionar').click();
         cy.get('#data').type(today).should('have.value', today);
     });
-    it.only('TC013 - Deve validar corretamente a data inserida manualmente', () => {
+    it('TC013 - Deve validar corretamente a data inserida manualmente', () => {
         const validDate = new Date().toISOString().split('T')[0];
 
         cy.get('#btn-adicionar').click();
         cy.get('#btn-adicionar').click();
         cy.get('#data').type(validDate).should('have.value', validDate);
+    });
+    it('TC014 - Não deve ser possível cadastrar um produto com caracteres especiais ou letras nos campos numéricos', () => {
+        cy.get('#btn-adicionar').click();
+        cy.get('#btn-adicionar').click();
+        cy.get('#quantidade').type('!@#').should('have.value', '');
+        cy.get('#quantidade').type('abc').should('have.value', '');
+        cy.get('#quantidade').type('123').should('have.value', '123');
+        cy.get('#valor').type('!@#').should('have.value', '');
+        cy.get('#valor').type('abc').should('have.value', '');
+        cy.get('#valor').type('123.45').should('have.value', '123.45');
+    });
+    it('TC015 - deve ser possível editar um produto já cadastrado', () => {
+        cy.get('#btn-adicionar').click();
+        cy.get('#btn-adicionar').click();
+        cy.get('#codigo').type('001');
+        cy.get('#nome').type('Produto Teste');
+        cy.get('#quantidade').type('10');
+        cy.get('#valor').type('100');
+        cy.get('#data').type('2024-06-23');
+        cy.get('#btn-salvar').click();
+        cy.get('#btn-sair').click();
+        cy.get('table tbody').should('contain', 'Produto Teste');
+        cy.get('table tbody tr:first-child td:last-child button:contains("Editar")').click();
+        cy.get('#cadastro-produto').should('be.visible');
+    });
+    it('TC016 - deve ser possível excluir um produto já cadastrado', () => {
+        cy.get('#btn-adicionar').click();
+        cy.get('#btn-adicionar').click();
+        cy.get('#codigo').type('001');
+        cy.get('#nome').type('Produto Teste');
+        cy.get('#quantidade').type('10');
+        cy.get('#valor').type('100');
+        cy.get('#data').type('2024-06-23');
+        cy.get('#btn-salvar').click();
+        cy.get('#btn-sair').click();
+        cy.get('table tbody').should('contain', 'Produto Teste');
+        cy.get('table tbody tr:first-child td:last-child button:contains("Excluir")').click();
+        cy.get('#cadastro-produto').should('be.visible');
+    });
+    it('TC017 - Deve ser possível fechar o modal ao clicar no "X" no canto superior direito', () => {
+        cy.get('#btn-adicionar').click();
+        cy.get('#btn-adicionar').click();
+        cy.get('#cadastro-produto').should('be.visible');
+        cy.get('.modal-header .close').click();
+        cy.get('#cadastro-produto').should('not.be.visible');
+    });
+    it('TC018 - Deve existir o botão "logout" ou "sair" no canto superior direito', () => {
+        cy.get('nav').find('a.nav-link').contains('Sair').should('exist');
+    });
+    it.only('TC019 - Deve ser possível sair do sistema e voltar para a página de login', () => {
+        cy.get('nav').find('a.nav-link').contains('Sair').click();
+        cy.url().should('include', '/login.html');
     });
 
 });
