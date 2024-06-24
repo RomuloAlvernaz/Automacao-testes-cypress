@@ -36,7 +36,15 @@ describe('GUI - Testes relacionados ao login', () => {
         cy.get('.alert').should('contain', 'E-mail ou senha inválidos'); 
 
     });
-    it('TC005 - Deve ser possível efetuar login com email e senha válidos', () => {
+    it.only('TC005 - Deve rejeitar senhas que excedem o limite máximo de caracteres', () => {
+        const longPassword = 'a'.repeat(51); // Supondo que o limite máximo seja 50 caracteres
+        cy.visit('http://127.0.0.1:5500/login.html'); 
+        cy.get('#email').type('admin@admin.com');
+        cy.get('#senha').type(longPassword).should('have.value', longPassword.slice(0, 50)); // Espera que o campo aceite apenas os primeiros 50 caracteres
+        cy.get('#btn-entrar').click();
+        cy.get('.alert').should('contain', 'Senha não pode exceder 50 caracteres');
+    });
+    it('TC006 - Deve ser possível efetuar login com email e senha válidos', () => {
         
         cy.visit('http://127.0.0.1:5500/login.html'); 
         cy.get('#email').type('admin@admin.com');

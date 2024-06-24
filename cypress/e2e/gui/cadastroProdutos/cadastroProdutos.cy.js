@@ -159,9 +159,15 @@ describe('GUI - testes relacionados ao cadastro de produtos', () => {
     it('TC018 - Deve existir o botão "logout" ou "sair" no canto superior direito', () => {
         cy.get('nav').find('a.nav-link').contains('Sair').should('exist');
     });
-    it.only('TC019 - Deve ser possível sair do sistema e voltar para a página de login', () => {
+    it('TC019 - Deve ser possível sair do sistema e voltar para a página de login', () => {
         cy.get('nav').find('a.nav-link').contains('Sair').click();
         cy.url().should('include', '/login.html');
     });
+
+    /*TC020 - Deve ser possível acesar o sistema em diferentes navegadores (comandos para realizar o teste pelo terminal)
+    npx cypress run --browser chrome
+    npx cypress run --browser firefox
+    npx cypress run --browser edge
+    npx cypress run --browser electron*/
 
 });
